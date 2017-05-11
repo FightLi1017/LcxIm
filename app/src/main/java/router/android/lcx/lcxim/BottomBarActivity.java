@@ -5,24 +5,28 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import java.util.List;
 
 import router.android.lcx.lcxim.Base.BottomTabView;
 
-public abstract class BottomBarActivity extends AppCompatActivity {
-     ViewPager mViewPager;
-     BottomTabView mBottomTabView;
-     FragmentPagerAdapter adapter;
+public abstract class BottomBarActivity extends MenuBaseActivity {
+     private  ViewPager mViewPager;
+    private BottomTabView mBottomTabView;
+    private FragmentPagerAdapter mAdapter;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_bar);
+        mToolbar=(Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         mViewPager=(ViewPager)findViewById(R.id.viewPager);
         mBottomTabView=(BottomTabView)findViewById(R.id.bottomTabView);
-        adapter=new FragmentPagerAdapter(getSupportFragmentManager()) {
+        mAdapter=new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 return getFragments().get(position);
@@ -33,7 +37,7 @@ public abstract class BottomBarActivity extends AppCompatActivity {
                 return getFragments().size();
             }
         };
-        mViewPager.setAdapter(adapter);
+        mViewPager.setAdapter(mAdapter);
 
        if (getCenterView()!=null){
            mBottomTabView.setTabListitem(getTabList(),getCenterView());
