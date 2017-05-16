@@ -5,6 +5,7 @@ import android.content.Context;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 import router.android.lcx.lcxim.Common.util.Config;
 
 /**
@@ -30,6 +31,7 @@ public class RetrofitFactory {
         return new Retrofit.Builder()
                 .client(ClientFactory.getInstance(context))
                 .baseUrl(Config.BASE_URL)
+                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();

@@ -9,5 +9,5 @@ import rx.Observable;
 
 public interface DataApiStore {
 
-       Observable<Login.LoginResponse> login(String region,String phone,String password);
+       Observable<String> login(String region,String phone,String password);
 }

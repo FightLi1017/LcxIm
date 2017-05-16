@@ -18,15 +18,22 @@ import rx.schedulers.Schedulers;
 // 以后要是换请求框架之后 我们也就只要从新写个iml类就可以了
 public class DataApiStoreIml implements DataApiStore {
     private Api serviceApi;
+    private static DataApiStoreIml INSTANCE=null;
+     public static DataApiStore getInstance(Context context){
+         if (INSTANCE==null){
+             INSTANCE=new DataApiStoreIml(context);
+         }
+         return INSTANCE;
+     }
 
-    public DataApiStoreIml(Context context) {
+    private DataApiStoreIml(Context context) {
         serviceApi=RetrofitFactory.getInstance(context).create(Api.class);
     }
 
     @Override
-    public Observable<Login.LoginResponse> login(String region, String phone, String password) {
+    public Observable<String> login(String region, String phone, String password) {
         return  serviceApi.login(getRequestBody(new Login.LoginRequest(region,phone,password)))
-                           .subscribeOn(Schedulers.io()) .subscribeOn(AndroidSchedulers.mainThread());
+                           .subscribeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread());
 
     }
 

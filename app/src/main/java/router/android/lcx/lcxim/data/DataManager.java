@@ -12,13 +12,21 @@ import rx.Observable;
 
 public class DataManager implements DataApiStore {
       private DataApiStore mDataApiStore;
+      private static DataManager INSTANCE = null;
 
-    public DataManager(DataApiStore DataApiStore) {
+    public  static DataManager getInstance(DataApiStore DataApiStore){
+          if (INSTANCE==null){
+              INSTANCE=new DataManager(DataApiStore);
+          }
+          return INSTANCE;
+    }
+
+    private DataManager(DataApiStore DataApiStore) {
        this.mDataApiStore=DataApiStore;
     }
 
     @Override
-    public Observable<Login.LoginResponse> login(String region, String phone, String password) {
+    public Observable<String> login(String region, String phone, String password) {
         return mDataApiStore.login(region,phone,password);
     }
 }
