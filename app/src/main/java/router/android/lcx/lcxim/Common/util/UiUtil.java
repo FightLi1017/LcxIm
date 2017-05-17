@@ -1,6 +1,7 @@
 package router.android.lcx.lcxim.Common.util;
 
 import android.content.Context;
+import android.os.Handler;
 import android.widget.Toast;
 
 import router.android.lcx.lcxim.BaseApp;
@@ -22,6 +23,32 @@ public class UiUtil {
         }
         mToast.setText(msg);
         mToast.show();
+    }
+
+    /**
+     * 用于在线程中执行弹土司操作
+     */
+    public static void showToastSafely(final String msg) {
+        getMainThreadHandler().post(new Runnable() {
+
+            @Override
+            public void run() {
+                if (mToast == null) {
+                    mToast = Toast.makeText(getContext(), "", Toast.LENGTH_SHORT);
+                }
+                mToast.setText(msg);
+                mToast.show();
+            }
+        });
+    }
+
+    /**
+     * 得到主线程Handler
+     *
+     * @return
+     */
+    public static Handler getMainThreadHandler() {
+        return BaseApp.getMainHandler();
     }
     /**
      * 得到上下文

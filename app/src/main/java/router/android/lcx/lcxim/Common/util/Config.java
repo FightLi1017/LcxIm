@@ -6,4 +6,5 @@ package router.android.lcx.lcxim.Common.util;
 
 public class Config {
     public static final String BASE_URL = "http://api.sealtalk.im/";
+    public static final String REGION = "86";
 }

@@ -1,11 +1,9 @@
 package router.android.lcx.lcxim.data.network;
 
 import okhttp3.RequestBody;
-import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.HEAD;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import router.android.lcx.lcxim.data.network.model.Result;
 import router.android.lcx.lcxim.data.network.model.Login;
 import rx.Observable;
 
@@ -16,7 +14,6 @@ import rx.Observable;
 public interface Api {
     //登录
     @POST("user/login")
-    Observable<String> login(@Body RequestBody body);
-    @POST("http://api.sealtalk.im/user/login")
-    Call<String> login1(@Body RequestBody body);
+    Observable<Result<Login.LoginResponse>> login(@Body RequestBody body);
+
 }
