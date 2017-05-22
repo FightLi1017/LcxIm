@@ -5,10 +5,13 @@ import android.content.Context;
 import com.google.gson.Gson;
 
 import okhttp3.RequestBody;
+import router.android.lcx.lcxim.data.network.model.Result;
 import router.android.lcx.lcxim.data.network.model.Login;
+import router.android.lcx.lcxim.exception.ExceptionEngine;
+import router.android.lcx.lcxim.exception.ServerException;
 import rx.Observable;
-import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -31,9 +34,10 @@ public class DataApiStoreIml implements DataApiStore {
     }
 
     @Override
-    public Observable<String> login(String region, String phone, String password) {
+    public Observable<Login.LoginResponse> login(String region, String phone, String password) {
         return  serviceApi.login(getRequestBody(new Login.LoginRequest(region,phone,password)))
-                           .subscribeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread());
+                                  .map(new ServerResultFunc<Login.LoginResponse>())
+                                  .onErrorResumeNext(new HttpResultFunc<Login.LoginResponse>());
 
     }
 
@@ -43,5 +47,22 @@ public class DataApiStoreIml implements DataApiStore {
         String route = new Gson().toJson(obj);
         RequestBody body=RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),route);
         return body;
+    }
+
+    private class ServerResultFunc<T> implements Func1<Result<T>, T> {
+        @Override
+        public T call(Result<T> httpResult) {
+            if (httpResult.code != 200) {
+                throw new ServerException(httpResult.code);
+            }
+            return httpResult.result;
+        }
+    }
+
+    private class HttpResultFunc<T> implements Func1<Throwable, Observable<T>> {
+        @Override
+        public Observable<T> call(Throwable throwable) {
+            return Observable.error(ExceptionEngine.handleException(throwable));
+        }
     }
 }

@@ -1,7 +1,5 @@
 package router.android.lcx.lcxim.data;
 
-import android.content.Context;
-
 import router.android.lcx.lcxim.data.network.DataApiStore;
 import router.android.lcx.lcxim.data.network.model.Login;
 import rx.Observable;
@@ -11,8 +9,11 @@ import rx.Observable;
  */
 
 public class DataManager implements DataApiStore {
+
+
       private DataApiStore mDataApiStore;
       private static DataManager INSTANCE = null;
+
 
     public  static DataManager getInstance(DataApiStore DataApiStore){
           if (INSTANCE==null){
@@ -26,7 +27,9 @@ public class DataManager implements DataApiStore {
     }
 
     @Override
-    public Observable<String> login(String region, String phone, String password) {
+    public Observable<Login.LoginResponse> login(String region, String phone, String password) {
         return mDataApiStore.login(region,phone,password);
     }
+
+
 }

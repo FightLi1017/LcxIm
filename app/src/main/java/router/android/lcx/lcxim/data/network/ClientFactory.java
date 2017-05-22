@@ -16,6 +16,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import router.android.lcx.lcxim.BaseApp;
 import router.android.lcx.lcxim.Common.util.NetUtils;
 import router.android.lcx.lcxim.Common.util.UiUtil;
+import router.android.lcx.lcxim.data.network.Cookie.Cache.SetCookieCache;
+import router.android.lcx.lcxim.data.network.Cookie.PersistentCookieJar;
+import router.android.lcx.lcxim.data.network.Cookie.persistent.SpCookiePersistor;
 
 /**
  * Created by lichenxi on 2017/5/16.
@@ -40,11 +43,15 @@ public class ClientFactory {
       OkHttpClient.Builder okHttpClient=new OkHttpClient.Builder();
         File cachefile=new File(context.getExternalCacheDir(),"http");
         Cache cache=new Cache(cachefile,DISK_CACHE_SIZE);
+
+        PersistentCookieJar cookieJar=new PersistentCookieJar(new SetCookieCache(),new SpCookiePersistor(context));
+
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return okHttpClient.cache(cache)
                 .addInterceptor(loggingInterceptor)
                 .addInterceptor(EADER_INTERCEPTOR)
+                .cookieJar(cookieJar)
                 .addInterceptor(CACHE_CONTROL_INTERCEPTOR)
                 .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
                 .build();
@@ -68,7 +75,7 @@ public class ClientFactory {
            if (!NetUtils.isNetworkAvailable(BaseApp.getContext())){
                  request.newBuilder().cacheControl(CacheControl.FORCE_CACHE)
                          .build();
-                 UiUtil.showToast("当前网络不可用");
+                 UiUtil.showToastSafely("当前网络不可用");
            }
 
             Response originalResponse=chain.proceed(request);
